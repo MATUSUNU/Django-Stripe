@@ -1,0 +1,142 @@
+
+# Django Stripe
+## one-time payments with Stripe
+### There are currently three ways to accept one-time payments with Stripe:
+1. Charges API (legacy)
+- # Card payments on the Charges API [charge, save, and authenticate cards with Stripe's legacy APIs.]
+    - The Charges and Tokens APIs are legacy APIs used in older Stripe integrations to accept debit and credit card payments.
+    - The Charges API limits your ability to take advantage of Stripe features. To get the latest features, use Stripe Checkout or migrate to the Payment Intents API.
+2. Stripe Checkout (the focus of this tutorial)
+- # User Flow
+    - After the user clicks the purchase button we need to do the following:
+    1. Get Publishable Key
+        - Send an XHR request from the client to the server requesting the publishable key
+        - Respond with the key
+        - Use the key to create a new instance of Stripe.js
+    2. Create Checkout Session
+        - Send another XHR request to the server requesting a new Checkout Session ID
+        - Generate a new Checkout Session and send back the ID
+        - Redirect to the checkout page for the user to finish their purchase
+    3. Redirect the User Appropriately
+        - Redirect to a success page after a successful payment
+        - Redirect to a cancellation page after a cancelled payment
+    4. Confirm Payment with Stripe Webhooks
+        - Set up the webhook endpoint
+        - Test the endpoint using the Stripe CLI
+        - Register the endpoint with Stripe
+Notes:-
+Webhooks are automated messages sent from one application to another in real-time
+when a specific event occurs, using an HTTP POST request. They act as a "reverse API,"
+where a service notifies another application instead of the other application needing
+to constantly check for updates. For example, when a customer makes a purchase,
+a webhook can instantly tell your app to update the order status, eliminating manual checks.
+
+- we still can't programmatically confirm payments and
+  perhaps run some code if a payment was successful
+
+Notes:-
+XMLHttpRequest (XHR) objects are used to interact with servers.
+You can retrieve data from a URL without having to do a full page refresh.
+This enables a Web page to update just part of a page without disrupting what the user is doing.
+
+Notes:-
+The Fetch API provides an interface for fetching resources (including across the network).
+It is a more powerful and flexible replacement for XMLHttpRequest.
+
+Notes:-
+The Streams API allows JavaScript to programmatically access streams of data received
+over the network and process them as desired by the developer.
+
+Notes:-
+The ReadableStream interface of the Streams API represents a readable stream of byte data.
+The Fetch API offers a concrete instance of a ReadableStream through the body property of a
+Response object.
+
+
+Now:
+DONE: 1. Get Publishable Key
+DONE: 2. Create Checkout Session
+DONE: 3. Redirect the User Appropriately
+DONE: 4. Confirm Payment with Stripe Webhooks
+
+#Webhooks
+## Stripe CLI [to test the webhook]
+- https://docs.stripe.com/stripe-cli#install
+
+we need this one[RESULT]:
+> Done! The Stripe CLI is configured for Django Test with account id acct_<ACCOUNT_ID>
+Please note: this key will expire after 90 days, at which point you'll need to re-authenticate.
+
+*we can start listening to Stripe events and forward them to our endpoint using the following command:
+```
+stripe listen --forward-to localhost:8000/webhook/
+```
+
+"
+
+Event Type	     :   Meaning
+- charge.succeeded : - A card was successfully charged 💳
+- payment_intent.succeeded : - The payment was confirmed ✅
+- checkout.session.completed : - The user finished Stripe Checkout 🧾
+- payment_intent.created : - A payment intent was initialized
+- charge.updated : - Stripe updated charge details (e.g., status, metadata)
+
+"
+
+
+There are two types of events in Stripe and programming in general:
+- Synchronous events, which have an immediate effect and results (e.g., creating a customer), and
+- asynchronous events, which don't have an immediate result (e.g., confirming payments).
+Because payment confirmation is done asynchronously, the user might get redirected to the
+success page before their payment is confirmed and before we receive their funds.
+
+
+## Synchronous events:
+- Immediate result
+- The server or API responds right away
+- Example: stripe.Customer.create(...)
+        - You send the request
+        - Stripe creates the customer
+        - You get the customer object instantly
+## Asynchronous events:
+- Deferred result
+- The operation starts, but the final outcome happens later
+- Example: stripe.PaymentIntent.confirm(...) or checkout.Session.create(...)
+        - Stripe begins processing the payment
+        - But confirmation may take seconds (bank checks, 3D Secure, etc.)
+        - You get redirected before the payment is finalized
+
+
+Notes:-
+One of the easiest ways to get notified when the payment goes through is to use a
+callback or so-called Stripe webhook
+
+- By using webhooks, we can be absolutely sure the payment went through successfully.
+
+## In order to use webhooks, we need to:
+1. Set up the webhook endpoint
+2. Test the endpoint using the "Stripe CLI"
+3. Register the endpoint with Stripe
+
+
+If you'd like to identify the user making the purchase, you can use the
+client_reference_id to attach some sort of user identifier to the Stripe session.
+```
+client_reference_id=request.user.id if request.user.is_authenticated else None,
+```
+!Important:-
+- It links the Stripe session to your Django user.
+- Useful for:
+    - Matching Stripe payments to users in your database
+    - Debugging or auditing transactions
+    - Sending personalized emails or receipts
+
+## Register the endpoint
+Finally, after deploying your app, you can register the endpoint in the Stripe dashboard, under
+Developers > Webhooks. This will generate a webhook signing secret for use in your production app.
+
+
+
+3. Payment Intents API (often coupled with Stripe Elements)
+
+## subscription payments with Django and Stripe
