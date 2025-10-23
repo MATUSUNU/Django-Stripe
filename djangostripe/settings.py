@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 import os
+import dj_database_url
 # import environ
 from pathlib import Path
 from dotenv import load_dotenv
@@ -103,6 +104,22 @@ DATABASES = {
         'PORT': os.getenv('PGPORT', '5432'),
     }
 }
+
+# Default configuration - will be overridden by DATABASE_URL if it exists
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
+# Override with DATABASE_URL if it exists (Railway provides this)
+if 'DATABASE_URL' in os.environ:
+    DATABASES['default'] = dj_database_url.config(
+        conn_max_age=600,
+        conn_health_checks=True,
+        ssl_require=True
+    )
 
 
 # Password validation
