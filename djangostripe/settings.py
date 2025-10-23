@@ -16,7 +16,13 @@ from pathlib import Path
 
 env = environ.Env()
 # reading .env file
-environ.Env.read_env()
+# environ.Env.read_env()
+env_file = Path(__file__).resolve().parent.parent / '.env'
+if env_file.exists():
+    environ.Env.read_env(env_file)
+else:
+    # In production (Railway), rely solely on environment variables
+    print("Running in production mode - using environment variables only")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
