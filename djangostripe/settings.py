@@ -105,14 +105,6 @@ DATABASES = {
     }
 }
 
-# Default configuration - will be overridden by DATABASE_URL if it exists
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
 # Override with DATABASE_URL if it exists (Railway provides this)
 if 'DATABASE_URL' in os.environ:
     DATABASES['default'] = dj_database_url.config(
