@@ -98,7 +98,6 @@ WSGI_APPLICATION = 'djangostripe.wsgi.application'
 if 'DATABASE_URL' in os.environ:
     DATABASES = {
         'default': dj_database_url.config(
-            default='postgresql://postgres:zuEFSdkrEWjKFqotqlclgMHYstwgOJvD@postgres.railway.internal:5432/railway',
             conn_max_age=600,
             conn_health_checks=True,
             ssl_require=True
