@@ -136,6 +136,13 @@ Finally, after deploying your app, you can register the endpoint in the Stripe d
 Developers > Webhooks. This will generate a webhook signing secret for use in your production app.
 
 
+## What's Next
+On a live website it's required to have "HTTPS" so your "connection is secure".
+Also while we hardcoded our API keys and webhook signing secret for simplicity,
+these should really be "stored in environment variables". You'll probably want to store the
+domain_url as an environment variable as well.
+
+
 
 3. Payment Intents API (often coupled with Stripe Elements)
 
