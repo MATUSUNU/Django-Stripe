@@ -35,7 +35,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-development-key-for-railwa
 # DEBUG = True
 DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -86,10 +86,21 @@ WSGI_APPLICATION = 'djangostripe.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('PGDATABASE', 'railway'),
+        'USER': os.getenv('PGUSER', 'postgres'),
+        'PASSWORD': os.getenv('PGPASSWORD', ''),
+        'HOST': os.getenv('PGHOST', 'localhost'),
+        'PORT': os.getenv('PGPORT', '5432'),
     }
 }
 
