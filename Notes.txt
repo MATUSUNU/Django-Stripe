@@ -1,5 +1,5 @@
 
-# Django Stripe
+# Django Stripe [Source: https://testdriven.io/blog/django-stripe-tutorial/]
 ## one-time payments with Stripe
 ### There are currently three ways to accept one-time payments with Stripe:
 1. Charges API (legacy)
